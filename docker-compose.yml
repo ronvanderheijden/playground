@@ -1,0 +1,59 @@
+services:
+  php:
+    image: playground/php
+    build:
+      context: php
+      args:
+        - COMPOSER_VERSION
+        - PHP_VERSION
+    volumes:
+      - ./src:/var/www/
+    networks:
+      mysql:
+      php:
+    environment:
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+
+  nginx:
+    image: playground/nginx
+    build:
+      context: nginx
+      args:
+        - NGINX_VERSION
+    volumes:
+      - ./src/public:/var/www/public:ro
+    networks:
+      php:
+    ports:
+      - 80:80
+    depends_on:
+      - php
+
+  mysql:
+    image: playground/mysql
+    build:
+      context: mysql
+      args:
+        - MYSQL_VERSION
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      mysql:
+    ports:
+      - 3316:3306
+    depends_on:
+      - php
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+
+volumes:
+  mysql:
+
+networks:
+  mysql:
+  php:
