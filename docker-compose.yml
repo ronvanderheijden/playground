@@ -1,0 +1,64 @@
+services:
+  php:
+    image: playground/php
+    build:
+      context: php
+      args:
+        - COMPOSER_VERSION
+        - PHP_VERSION
+    volumes:
+      - ./src:/var/www/
+    networks:
+      mysql:
+      php:
+
+  nginx:
+    image: playground/nginx
+    build:
+      context: nginx
+      args:
+        - NGINX_VERSION
+    volumes:
+      - ./src/public:/var/www/public:ro
+    networks:
+      proxy:
+      php:
+    depends_on:
+      - php
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+#      - "traefik.http.routers.playground.entryPoints=websecure"
+#      - "traefik.http.routers.playground.tls.certResolver=localhost"
+      - "traefik.http.routers.playground.rule=Host(`playground.test`)"
+      - "traefik.http.services.playground.loadBalancer.server.port=80"
+
+  mysql:
+    image: playground/mysql
+    build:
+      context: mysql
+      args:
+        - MYSQL_VERSION
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      mysql:
+    ports:
+      - 127.0.0.1:3316:3306
+    depends_on:
+      - php
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+
+volumes:
+  mysql:
+
+networks:
+  proxy:
+    name: proxy
+    external: true
+  mysql:
+  php:
