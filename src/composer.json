@@ -1,0 +1,14 @@
+{
+    "name": "ronvanderheijden/playground",
+    "authors": [
+        {
+            "name": "Ron van der Heijden",
+            "email": "r.heijden@live.nl"
+        }
+    ],
+    "require": {
+      "ext-pdo": "*"
+    },
+    "require-dev": {},
+    "scripts": {}
+}
