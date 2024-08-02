@@ -27,7 +27,7 @@ services:
     networks:
       php:
     ports:
-      - 80:80
+      - 1337:80
     depends_on:
       - php
 

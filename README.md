@@ -1,17 +1,25 @@
 # Playground
 Just a small application that uses nginx, php and a mysql database.
 
-```sh
-# copy env file
+## copy env file
+```shell
 cp -n .env{.example,}
 ```
 
-```sh
-# start containers
-docker-compose up --detach
+## start containers
+```shell
+docker compose up --detach
 ```
 
-```sh
-# test
-curl localhost
+## setup database
+
+### configure database
+Add the following variable to `src/.env`:
+```
+DATABASE_URL="mysql://appuser:fakepassword@127.0.0.1:3306/playground?serverVersion=11.4.2-MariaDB&charset=utf8mb4"
+```
+
+### update composer
+```shell
+docker compose exec php composer update
 ```
